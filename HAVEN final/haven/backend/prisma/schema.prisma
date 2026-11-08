@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  RESIDENT
+  ADMIN
+}
+
+enum RoomStatus {
+  AVAILABLE
+  OCCUPIED
+  MAINTENANCE
+}
+
+enum BookingType {
+  VIEWING // นัดชมห้อง
+  RENT    // จองเช่า
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum BillStatus {
+  UNPAID
+  PAID
+  OVERDUE
+}
+
+enum SlotType {
+  CAR
+  MOTORCYCLE
+  EV
+}
+
+enum SlotStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+}
+
+enum ParcelStatus {
+  WAITING
+  PICKED_UP
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         Role     @default(RESIDENT)
+  roomId       String?
+  room         Room?    @relation(fields: [roomId], references: [id])
+  createdAt    DateTime @default(now())
+
+  bookings    Booking[]
+  payments    Payment[]
+  parcels     Parcel[]
+  slots       ParkingSlot[]
+  redemptions   BenefitRedemption[]
+  notifications Notification[]
+}
+
+model Room {
+  id          String     @id @default(cuid())
+  number      String     @unique
+  floor       Int
+  type        String // Studio, 1 Bedroom, 2 Bedroom
+  sizeSqm     Float
+  monthlyRent Int
+  status      RoomStatus @default(AVAILABLE)
+  description String?
+  imageUrl    String?
+
+  residents User[]
+  bookings  Booking[]
+  bills     UtilityBill[]
+  parcels   Parcel[]
+}
+
+model Booking {
+  id         String        @id @default(cuid())
+  roomId     String
+  room       Room          @relation(fields: [roomId], references: [id])
+  userId     String?
+  user       User?         @relation(fields: [userId], references: [id])
+  guestName  String
+  guestEmail String
+  guestPhone String
+  type       BookingType
+  startDate  DateTime
+  months     Int?
+  status     BookingStatus @default(PENDING)
+  note       String?
+  createdAt  DateTime      @default(now())
+}
+
+model UtilityBill {
+  id           String     @id @default(cuid())
+  roomId       String
+  room         Room       @relation(fields: [roomId], references: [id])
+  month        String // "2026-10"
+  waterPrev    Int
+  waterCurr    Int
+  elecPrev     Int
+  elecCurr     Int
+  waterRate    Float      @default(18)
+  elecRate     Float      @default(7)
+  commonFee    Int        @default(0)
+  waterAmount  Float
+  elecAmount   Float
+  total        Float
+  status       BillStatus @default(UNPAID)
+  dueDate      DateTime
+  createdAt    DateTime   @default(now())
+
+  payments Payment[]
+
+  @@unique([roomId, month])
+}
+
+model Payment {
+  id      String      @id @default(cuid())
+  billId  String
+  bill    UtilityBill @relation(fields: [billId], references: [id])
+  userId  String
+  user    User        @relation(fields: [userId], references: [id])
+  amount  Float
+  method  String // PROMPTPAY, CARD, CASH
+  paidAt  DateTime    @default(now())
+}
+
+model ParkingSlot {
+  id             String     @id @default(cuid())
+  code           String     @unique // B1-A01
+  zone           String
+  floor          String
+  type           SlotType   @default(CAR)
+  status         SlotStatus @default(AVAILABLE)
+  assignedUserId String?
+  assignedUser   User?      @relation(fields: [assignedUserId], references: [id])
+
+  logs ParkingLog[]
+}
+
+model ParkingLog {
+  id      String      @id @default(cuid())
+  slotId  String
+  slot    ParkingSlot @relation(fields: [slotId], references: [id])
+  plate   String
+  entryAt DateTime    @default(now())
+  exitAt  DateTime?
+}
+
+model Parcel {
+  id              String       @id @default(cuid())
+  trackingNo      String
+  carrier         String
+  recipientUserId String
+  recipient       User         @relation(fields: [recipientUserId], references: [id])
+  roomId          String
+  room            Room         @relation(fields: [roomId], references: [id])
+  receivedAt      DateTime     @default(now())
+  pickedUpAt      DateTime?
+  status          ParcelStatus @default(WAITING)
+  note            String?
+}
+
+model Benefit {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String // FITNESS, POOL, PARTNER, LAUNDRY ...
+  partner     String?
+  discount    String?
+  validUntil  DateTime?
+  active      Boolean  @default(true)
+
+  redemptions BenefitRedemption[]
+}
+
+model BenefitRedemption {
+  id         String   @id @default(cuid())
+  benefitId  String
+  benefit    Benefit  @relation(fields: [benefitId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  code       String   @unique
+  redeemedAt DateTime @default(now())
+}
+
+// การแจ้งเตือนในเว็บ (กระดิ่ง)
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+}

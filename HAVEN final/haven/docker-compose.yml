@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: haven
+      POSTGRES_PASSWORD: haven
+      POSTGRES_DB: haven
+    ports:
+      - "5432:5432"
+    volumes:
+      - haven_pg:/var/lib/postgresql/data
+
+volumes:
+  haven_pg:

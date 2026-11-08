@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300">
+  <rect width="480" height="300" fill="#efe9df"/>
+  <rect y="230" width="480" height="70" fill="#c9a77f"/>
+  <!-- window -->
+  <rect x="300" y="40" width="140" height="150" rx="6" fill="#bfe0f0"/>
+  <rect x="300" y="40" width="140" height="150" rx="6" fill="none" stroke="#f8f6f1" stroke-width="8"/>
+  <line x1="370" y1="40" x2="370" y2="190" stroke="#f8f6f1" stroke-width="6"/>
+  <rect x="318" y="120" width="30" height="70" fill="#7fb3a0" opacity=".6"/><rect x="392" y="100" width="34" height="90" fill="#7fb3a0" opacity=".5"/>
+  <!-- bed -->
+  <rect x="40" y="150" width="210" height="80" rx="10" fill="#f8f6f1"/>
+  <rect x="40" y="120" width="20" height="110" rx="6" fill="#8a6a4a"/>
+  <rect x="68" y="136" width="56" height="26" rx="10" fill="#dcebe5"/>
+  <rect x="120" y="160" width="130" height="70" rx="8" fill="#2f7d65"/>
+  <!-- desk -->
+  <rect x="270" y="200" width="150" height="10" fill="#8a6a4a"/><rect x="280" y="210" width="8" height="30" fill="#8a6a4a"/><rect x="402" y="210" width="8" height="30" fill="#8a6a4a"/>
+  <rect x="300" y="180" width="36" height="20" rx="3" fill="#0f2c24"/>
+  <!-- plant & lamp -->
+  <rect x="440" y="196" width="22" height="34" rx="4" fill="#d9d3c6"/><circle cx="451" cy="186" r="18" fill="#2f7d65"/>
+  <circle cx="160" cy="60" r="18" fill="#ffd89a"/><line x1="160" y1="0" x2="160" y2="42" stroke="#0f2c24" stroke-width="3"/>
+</svg>

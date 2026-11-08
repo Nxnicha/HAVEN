@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Prompt", ui-sans-serif, system-ui, sans-serif;
+  --color-haven-50: #f2f7f5;
+  --color-haven-100: #dcebe5;
+  --color-haven-500: #2f7d65;
+  --color-haven-600: #256652;
+  --color-haven-700: #1d5142;
+  --color-haven-900: #0f2c24;
+}
+
+@layer components {
+  .card { @apply rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200; }
+  .btn { @apply inline-flex items-center justify-center rounded-lg bg-haven-600 px-4 py-2 text-sm font-medium text-white hover:bg-haven-700 disabled:opacity-50; }
+  .btn-ghost { @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-haven-700 ring-1 ring-haven-500/40 hover:bg-haven-50; }
+  .input { @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-haven-500 focus:outline-none focus:ring-2 focus:ring-haven-100; }
+  .label { @apply mb-1 block text-sm font-medium text-slate-700; }
+  .err { @apply mt-1 text-xs text-red-600; }
+  .badge { @apply inline-block rounded-full px-2.5 py-0.5 text-xs font-medium; }
+}
